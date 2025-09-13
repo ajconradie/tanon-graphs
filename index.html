@@ -1,0 +1,106 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript" src="./public/js/tanon.utils.js"></script>
+<script type="text/javascript" src="./public/js/tanon.graph.js"></script>
+<script type="text/javascript" src="./public/js/tanon.graph.options.js"></script>
+<script type="text/javascript" src="./public/js/tanon.data.js"></script>
+
+<script>
+    let $data = new TanonData();
+    function getData() {
+        return $data;
+    }
+    function getOptions() {
+        let $graphOptions = new TanonGraphOptions();
+        $graphOptions.title = "Investment values";
+        $graphOptions.subtitle = "Investment growth over time";
+        $graphOptions.yTitle = "Value";
+        $graphOptions.height = 400;
+        $graphOptions.width = 1600;
+        return $graphOptions;
+    }
+    function drawChart() {
+        let $graph = new TanonGraph("main_graph");
+        let $graphOptions = getOptions();
+        let $graphData = getData();
+        $graph.initialize($graphOptions);
+        $graph.setData($graphData);
+        $graph.display("graph_container");
+    }
+</script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['line'] });
+    //google.charts.setOnLoadCallback(drawChart);
+</script>
+<div id="graph_container"></div>
+<button id="createData_01">Constant Value</button>
+<button id="createData_02">Constant Increase</button>
+<button id="createData_03">Compound Interest</button>
+<button id="createData_04">Compound Interest</button>
+<script>
+    let cached_x_data = null;
+    function get_cached_x_data() {
+        if (cached_x_data == null) {
+            let tanonUtils = new TanonUtils();
+            let x_label = "Days as numbers";
+            let years = 20;
+            let periods = 365.25;
+            let xData = tanonUtils.createArrayOfNumbers(0, years * periods, 1);
+            cached_x_data = xData;
+            $data.createX(x_label, "number", xData);
+        }
+        return cached_x_data;
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        const myButton_01 = document.getElementById('createData_01');
+        if (myButton_01) {
+            myButton_01.addEventListener('click', function () {
+                let tanonUtils = new TanonUtils();
+                let initialAmount = 1000000;
+                let new_data = tanonUtils.createDataConstant(get_cached_x_data(), initialAmount);
+                $data.addData("Initial Investment", "number", new_data);
+                drawChart();
+            });
+        }
+        const myButton_02 = document.getElementById('createData_02');
+        if (myButton_02) {
+            myButton_02.addEventListener('click', function () {
+                let tanonUtils = new TanonUtils();
+                let initialAmount = 1000000;
+                let periods = 365.25;
+                let annualRate = 5.5;
+                let rateAsPercentage = annualRate / 100;
+                let new_data = tanonUtils.createDataConstantIncrement(get_cached_x_data(), initialAmount, rateAsPercentage, periods);
+                $data.addData("Investment with " + annualRate + " % - constant", "number", new_data);
+                drawChart();
+            });
+        }
+        const myButton_03 = document.getElementById('createData_03');
+        if (myButton_03) {
+            myButton_03.addEventListener('click', function () {
+                let tanonUtils = new TanonUtils();
+                let initialAmount = 1000000;
+                let periods = 365.25;
+                let annualRate = 5.5;
+                let rateAsPercentage = annualRate / 100;
+                var new_data = tanonUtils.createDataCompoundInterest(get_cached_x_data(), initialAmount, rateAsPercentage, periods);
+                $data.addData("Investment with " + annualRate + " % - accrual", "number", new_data);
+                drawChart();
+            });
+        }
+        const myButton_04 = document.getElementById('createData_04');
+        if (myButton_04) {
+            myButton_04.addEventListener('click', function () {
+                let tanonUtils = new TanonUtils();
+                let initialAmount = 1000000;
+                let periods = 365.25;
+                let annualRate = 5.5;
+                let rateAsPercentage = annualRate / 100;
+                var new_data = tanonUtils.createDataCompoundInterest(get_cached_x_data(), initialAmount, rateAsPercentage, periods);
+                $data.addData("Investment with " + annualRate + " % - accrual", "number", new_data);
+                drawChart();
+            });
+        }
+    });
+
+</script>

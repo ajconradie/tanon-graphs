@@ -1,0 +1,266 @@
+<html>
+<head>
+
+<script>
+/*
+
+This is the test script that works
+
+The arrayJOIN functions joins arrays that has an index key that are the same 
+NB - arrays must be sorted before the time
+NB - key must be camparable
+
+*/
+window.onload = test;
+
+function createHTML(data) {
+  var innerH = "<table>";
+   for(var i=0; i<data.length; ++i) {
+    innerH += "<tr>";
+    for(var j=0; j<data[i].length; ++j) {
+      innerH += "<td width='100' style='text-align: right'>";
+      innerH += data[i][j];
+      innerH += "</td>";
+    }
+   innerH += "</tr>";
+  }
+  innerH += "</table>";
+  return innerH;
+}
+function createHeading(t) {
+  var innerH = "<div><h2>";
+  innerH += t;
+  innerH += "</h2></div>";
+  return innerH;
+}
+
+function joinArrays(indexColumn, array1, array2) {
+
+  var newArray = [];
+
+  var done = false;
+  var array1Index = 0;
+  var array2Index = 0;
+
+  while (!done) {
+    
+    
+    if(array1Index >= array1.length ) {
+            newArray.push( [array2[array2Index][0]].concat( Array(array1[0].length-1).fill(0), array2[array2Index].slice(1)));
+            array2Index++;
+    }
+    else {
+      if(array2Index >= array2.length ) {
+              newArray.push(array1[array1Index].concat(Array(array2[0].length-1).fill(0)));
+              array1Index++;
+      }
+      else {
+          if (array1[array1Index][indexColumn] == array2[array2Index][indexColumn]) {
+            newArray.push(array1[array1Index].concat(array2[array2Index].slice(1)));
+            array1Index++;
+            array2Index++;
+          }
+          else {
+            if (array1[array1Index][indexColumn] < array2[array2Index][indexColumn]) {
+              newArray.push(array1[array1Index].concat(Array(array2[0].length-1).fill(0)));
+              array1Index++;
+            }
+            else {
+              newArray.push( [array2[array2Index][0]].concat( Array(array1[0].length-1).fill(0), array2[array2Index].slice(1)));
+              array2Index++;
+            }
+          }
+      }
+    }
+
+    
+    done = array1Index >= array1.length && array2Index >= array2.length;
+  }
+
+  return newArray;
+
+}
+
+function joinArraysWithFill(indexColumn, array1, array2, fillValue) {
+
+  var newArray = [];
+
+  var done = false;
+  var array1Index = 0;
+  var array2Index = 0;
+
+  while (!done) {
+    
+    
+    if(array1Index >= array1.length ) {
+            newArray.push( [array2[array2Index][0]].concat( Array(array1[0].length-1).fill(fillValue), array2[array2Index].slice(1)));
+            array2Index++;
+    }
+    else {
+      if(array2Index >= array2.length ) {
+              newArray.push(array1[array1Index].concat(Array(array2[0].length-1).fill(fillValue)));
+              array1Index++;
+      }
+      else {
+          if (array1[array1Index][indexColumn] == array2[array2Index][indexColumn]) {
+            newArray.push(array1[array1Index].concat(array2[array2Index].slice(1)));
+            array1Index++;
+            array2Index++;
+          }
+          else {
+            if (array1[array1Index][indexColumn] < array2[array2Index][indexColumn]) {
+              newArray.push(array1[array1Index].concat(Array(array2[0].length-1).fill(fillValue)));
+              array1Index++;
+            }
+            else {
+              newArray.push( [array2[array2Index][0]].concat( Array(array1[0].length-1).fill(fillValue), array2[array2Index].slice(1)));
+              array2Index++;
+            }
+          }
+      }
+    }
+    done = array1Index >= array1.length && array2Index >= array2.length;
+  }
+
+  return newArray;
+
+}
+
+function test() {
+  var innerH = createHeading("<h1>Hello&nbsp;<small>world</small></h1>");
+
+  innerH += createHeading("Set 0");
+  var data_in_00 = [
+    ["2025-06-01"],
+    ["2025-07-02"],
+    ["2025-08-03"],
+    ["2025-09-04"],
+    ["2025-10-05"],
+    ["2025-11-06"],
+    ["2025-12-07"],
+  ];
+  innerH += createHTML(data_in_00);
+
+  innerH += createHeading("Set 1");
+  var data_in_01 = [
+    ["2025-06-01",1],
+    ["2025-07-02",2],
+    ["2025-08-03",3],
+    ["2025-09-04",4],
+    ["2025-10-05",5],
+    ["2025-11-06",6],
+    ["2025-12-07",7],
+  ];
+  innerH += createHTML(data_in_01);
+
+  innerH += createHeading("Join Set 0 and Set 1 as J0");
+  var data_joined_00 = joinArrays(0, data_in_00, data_in_01);
+  innerH += createHTML(data_joined_00);
+
+  innerH += createHeading("Set 2");
+  var data_in_02 = [
+    ["2025-06-01",10],
+    ["2025-07-02",20],
+    ["2025-08-03",30],
+    ["2025-09-04",40],
+    ["2025-10-05",50],
+    ["2025-11-06",60],
+    ["2025-12-07",70],
+  ];
+  innerH += createHTML(data_in_02);
+
+  innerH += createHeading("Join Set 1 and Set 2 as J1");
+  var data_joined_01 = joinArrays(0, data_in_01, data_in_02);
+  innerH += createHTML(data_joined_01);
+
+  innerH += createHeading("Set 3");
+  var data_in_03 = [
+    ["2025-06-01",100],
+    ["2025-07-02",200],
+    ["2025-08-03",300],
+    ["2025-09-04",400],
+    ["2025-10-05",500],
+    ["2025-11-06",600],
+    ["2025-12-07",700],
+  ];
+  innerH += createHTML(data_in_03);
+
+  innerH += createHeading("Join J1 and Set 3 as J2");
+  var data_joined_02 = joinArrays(0, data_joined_01, data_in_03);
+  innerH += createHTML(data_joined_02);
+  
+  innerH += createHeading("Join J1 and J2 as J3");
+  var data_joined_03 = joinArrays(0, data_joined_01, data_joined_02);
+  innerH += createHTML(data_joined_03);
+
+  innerH += createHeading("Set 4");
+  var data_in_04 = [
+    ["2025-05-01",1001],
+    ["2025-06-01",1000],
+    ["2025-06-02",2000],
+    ["2025-07-03",3000],
+    ["2025-08-01",4000],
+    ["2025-08-03",5000],
+    ["2025-08-05",5000],
+    ["2025-11-01",6000],
+    ["2025-12-01",7000],
+    ["2026-01-01",8000],
+  ];
+  innerH += createHTML(data_in_04);
+
+  innerH += createHeading("Join J3 and Set 4 as J4");
+  var data_joined_04 = joinArrays(0, data_joined_03, data_in_04);
+  innerH += createHTML(data_joined_04);
+
+  innerH += createHeading("Set 5");
+  var data_in_05 = [
+    ["2025-08-01",40000],
+    ["2025-08-03",50000],
+    ["2025-08-05",50000],
+    ["2025-11-01",60000],
+    ["2025-11-02",60000],
+    ["2025-11-03",60000],
+    ["2025-11-04",60000],
+    ["2025-11-05",60000],
+
+  ];
+  innerH += createHTML(data_in_05);
+
+  innerH += createHeading("Join J4 and Set 5 as J5");
+  var data_joined_05 = joinArrays(0, data_joined_04, data_in_05);
+  innerH += createHTML(data_joined_05);
+
+
+  innerH += createHeading("Set 6");
+  var data_in_06 = [
+    ["2025-08-01",400000],
+    ["2025-08-03",500000],
+    ["2025-08-05",500000],
+    ["2025-11-01",600000],
+    ["2025-11-02",600000],
+    ["2025-11-03",600000],
+    ["2025-11-04",600000],
+    ["2025-11-05",600000],
+
+  ];
+  innerH += createHTML(data_in_06);
+
+  innerH += createHeading("Join J5 and Set 6 as J6");
+  var data_joined_06 = joinArraysWithFill(0, data_joined_05, data_in_06, null);
+  innerH += createHTML(data_joined_06);
+
+
+  innerH += createHeading("=======");
+  innerH += createHeading("The END");
+  innerH += createHeading("=======");
+
+  document.getElementById("test_01").innerHTML = innerH;
+}
+</script>
+</head>
+
+<body>
+  <div id="test_01"></div>
+</body>
+
+</html>
