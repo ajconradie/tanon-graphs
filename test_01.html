@@ -30,24 +30,11 @@
 </script>
 <script type="text/javascript">
     google.charts.load('current', { 'packages': ['line'] });
-    //google.charts.setOnLoadCallback(drawChart);
 </script>
 <div id="graph_container"></div>
-<div>
 <button id="createData_01">Constant Value</button>
-</div>
-<div>
-
 <button id="createData_02">Constant Increase</button>
-</div>
-<div>
 <button id="createData_03">Compound Interest</button>
-</div>
-<div>
-<button id="createData_04">Compound Interest</button>
-</div>
-
-
 <script>
     let cached_x_data = null;
     function get_cached_x_data() {
@@ -89,19 +76,6 @@
         const myButton_03 = document.getElementById('createData_03');
         if (myButton_03) {
             myButton_03.addEventListener('click', function () {
-                let tanonUtils = new TanonUtils();
-                let initialAmount = 1000000;
-                let periods = 365.25;
-                let annualRate = 5.5;
-                let rateAsPercentage = annualRate / 100;
-                var new_data = tanonUtils.createDataCompoundInterest(get_cached_x_data(), initialAmount, rateAsPercentage, periods);
-                $data.addData("Investment with " + annualRate + " % - accrual", "number", new_data);
-                drawChart();
-            });
-        }
-        const myButton_04 = document.getElementById('createData_04');
-        if (myButton_04) {
-            myButton_04.addEventListener('click', function () {
                 let tanonUtils = new TanonUtils();
                 let initialAmount = 1000000;
                 let periods = 365.25;
